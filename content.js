@@ -26,28 +26,18 @@ const getTextNodes = (nodes) => {
   return selectedNodes
 }
 
-const getRange = (bounds, parent) => {
-  return Object.values(nodes).filter((node) => {
-    return true
-  })
-}
-
-const getRange = (anchor, focus, parent) => {
+const getRootNodes = (bounds, parent) => {
   const rootNodes = Object.values(parent.childNodes)
   let startIndex = null
   let endIndex = null
-  let startOffset = null
-  let endOffset = null
 
   rootNodes.forEach((node, index) => {
     bounds.forEach((boundary) => {
-      if (node.contains(boundary.node)) {
+      if (node.contains(boundary)) {
         if (startIndex === null) {
           startIndex = index
-          startOffset = boundary.offset
         } else {
           endIndex = index
-          endOffset = boundary.offset
         }
       }
     })
@@ -55,19 +45,14 @@ const getRange = (anchor, focus, parent) => {
 
   const range = rootNodes.filter((node, index) => {
     if (index >= startIndex && index <= endIndex) {
+      console.log(node.childNodes)
       return node
     } else {
       return false
     }
   })
 
-  return {
-    range,
-    offset: {
-      start: startOffset,
-      end: endOffset,
-    },
-  }
+  return range
 }
 
 const getSelectedNodes = (nodes, text) => {
@@ -83,6 +68,11 @@ const getSelectedNodes = (nodes, text) => {
   })
 }
 
+const getOffset = (selection, isAnchorStart) => ({
+  start: isAnchorStart ? selection.anchorOffset : selection.focusOffset,
+  end: !isAnchorStart ? selection.anchorOffset : selection.focusOffset,
+})
+
 const getSelection = () => {
   let text = ''
 
@@ -91,16 +81,20 @@ const getSelection = () => {
 
     text = selection.toString()
 
-    const anchor = { node: selection.anchorNode, offset: selection.anchorOffset }
-    const focus = { node: selection.focusNode, offset: selection.focusOffset }
+    const anchorNode = selection.anchorNode
+    const focusNode = selection.focusNode
 
-    const parentNode = getCommonParent(anchor.node, focus.node)
-    const { range, offset } = getRange([anchor, focus], parentNode)
-    const textNodes = getTextNodes(range)
-    const selectedNodes = getSelectedNodes(textNodes, text)
-    console.log(textNodes)
+    const parentNode = getCommonParent(anchorNode, focusNode)
+    const rootNodes = getRootNodes([anchorNode, focusNode], parentNode)
 
-    return selectedNodes
+    if (rootNodes.length > 0) {
+      const isAnchorStart = rootNodes[0].contains(anchorNode)
+      const offset = getOffset(selection, isAnchorStart)
+      const textNodes = getTextNodes(rootNodes)
+      const selectedNodes = getSelectedNodes(textNodes, text, offset)
+
+      return selectedNodes
+    }
   }
 
   return false
