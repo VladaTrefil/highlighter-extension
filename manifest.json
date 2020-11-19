@@ -4,6 +4,15 @@
   "description": "testing playground!",
   "manifest_version": 2,
   "permissions": ["storage"],
+  "commands": {
+    "highlightText": {
+      "suggested_key": {
+        "default": "Ctrl+H",
+        "mac": "Command+H"
+      },
+      "description": "Highlights selected text"
+    }
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
