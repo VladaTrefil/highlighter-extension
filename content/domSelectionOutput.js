@@ -16,23 +16,29 @@ const getOffset = (selection, isAnchorStart) => ({
   end: !isAnchorStart ? selection.anchorOffset : selection.focusOffset,
 })
 
-const getRootNodes = (bounds, parent) => {
-  const rootNodes = Object.values(parent.childNodes)
-  let startIndex = null
+const getBoundaries = (bounds, rootNodes) => {
+  const start = { index: null, node: null }
+  const end = { index: null, node: null }
   let endIndex = null
 
   rootNodes.forEach((node, index) => {
     bounds.forEach((boundary) => {
       if (node.contains(boundary)) {
-        if (startIndex === null) {
-          startIndex = index
+        if (start.index === null) {
+          start.index = index
+          start.element = boundary
         } else {
-          endIndex = index
+          end.index = index
+          end.element = boundary
         }
       }
     })
   })
 
+  return { start, end }
+}
+
+const getRootNodesInBounds = (startIndex, endIndex, rootNodes) => {
   const range = rootNodes.filter((node, index) => {
     if (index >= startIndex && index <= endIndex) {
       return node
@@ -113,13 +119,16 @@ const parseSelectedNodes = () => {
     const focusNode = selection.focusNode
 
     const parentNode = getCommonParent(anchorNode, focusNode)
-    const rootNodes = getRootNodes([anchorNode, focusNode], parentNode)
+    const rootNodes = Object.values(parentNode.childNodes)
+    const { start, end } = getBoundaries([anchorNode, focusNode], rootNodes)
+
+    const selectedRootNodes = getRootNodesInBounds(start.index, end.index, rootNodes)
 
     if (rootNodes.length > 0) {
       const isAnchorStart = rootNodes[0].contains(anchorNode)
       const offset = getOffset(selection, isAnchorStart)
 
-      const selectedNodes = getSelectedNodes(rootNodes)
+      const textNodes = getTextNodes(selectedRootNodes)
       const textNodes = getTextNodes(selectedNodes)
 
       const matchingNodes = getMatchingNodes(textNodes, text, offset)
