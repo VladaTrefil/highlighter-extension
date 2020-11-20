@@ -35,7 +35,6 @@ const getRootNodes = (bounds, parent) => {
 
   const range = rootNodes.filter((node, index) => {
     if (index >= startIndex && index <= endIndex) {
-      console.log(node.childNodes)
       return node
     } else {
       return false
@@ -81,6 +80,27 @@ const getTextNodes = (nodes) => {
   return selectedNodes
 }
 
+const getMatchingNodes = (nodes, fullText, offset) => {
+  return nodes.filter((node, index) => {
+    const nodeText = node.textContent
+    let partText = ''
+
+    if (index === 0) {
+      partText = nodeText.slice(offset.start)
+    } else if (index === nodes.length) {
+      partText = nodeText.slice(0, offset.end)
+    } else {
+      partText = nodeText
+    }
+
+    if (fullText.includes(partText)) {
+      return { node, text: partText }
+    } else {
+      return false
+    }
+  })
+}
+
 const parseSelectedNodes = () => {
   let text = ''
 
@@ -98,10 +118,13 @@ const parseSelectedNodes = () => {
     if (rootNodes.length > 0) {
       const isAnchorStart = rootNodes[0].contains(anchorNode)
       const offset = getOffset(selection, isAnchorStart)
-      const textNodes = getTextNodes(rootNodes)
-      const selectedNodes = getSelectedNodes(textNodes, text, offset)
 
-      return selectedNodes
+      const selectedNodes = getSelectedNodes(rootNodes)
+      const textNodes = getTextNodes(selectedNodes)
+
+      const matchingNodes = getMatchingNodes(textNodes, text, offset)
+
+      return matchingNodes
     }
   }
 
