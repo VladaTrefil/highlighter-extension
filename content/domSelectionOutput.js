@@ -108,6 +108,20 @@ const getMatchingNodes = (nodes, fullText, offset) => {
     .filter((node) => node)
 }
 
+// Get ID of the closest anchor element
+const getAnchorID = (parent) => {
+  while (parent.parentNode !== null && parent.id === '') {
+    console.log(parent, parent.parentNode)
+    parent = parent.parentNode
+  }
+
+  if (parent.id !== '') {
+    return parent.id
+  } else {
+    return false
+  }
+}
+
 // Get output from selection in selected nodes and text
 const getDomSelectionOutput = () => {
   if (!window.getSelection) {
@@ -135,6 +149,8 @@ const getDomSelectionOutput = () => {
     const selectedNodes = removeNodesOutsideBounds(textNodes, start.node, end.node)
     const matchingNodes = getMatchingNodes(selectedNodes, text, offset)
 
-    return { nodes: matchingNodes, text, parent: parentNode }
+    const anchorParentID = getAnchorID(parentNode)
+
+    return { nodes: matchingNodes, text, anchor: anchorParentID }
   }
 }
