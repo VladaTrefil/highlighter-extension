@@ -16,7 +16,11 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content/messageHandler.js", "content/domSelectionOutput.js"]
+      "js": [
+        "content/messageHandler.js",
+        "content/domSelectionOutput.js",
+        "content/domSelectionParser.js"
+      ]
     }
   ],
   "background": {
