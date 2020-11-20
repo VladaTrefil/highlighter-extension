@@ -19,6 +19,7 @@
       "js": [
         "content/messageHandler.js",
         "content/domSelectionOutput.js",
+        "content/domSelectionInput.js",
         "content/domSelectionParser.js"
       ]
     }

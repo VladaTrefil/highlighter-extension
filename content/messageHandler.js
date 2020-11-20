@@ -1,10 +1,12 @@
 chrome.runtime.onMessage.addListener((request, sender) => {
   if (request.key === 'getSelection') {
     const { nodes, anchor } = getDomSelectionOutput()
-    const data = getParsedSelection(nodes, anchor)
-    console.log(data)
+    const nodeData = getParsedSelection(nodes, anchor)
 
-    // const selectionInput = getDomSelectionInput(nodes, anchor)
+    const selectionInput = getDomSelectionInput(nodeData, anchor)
+
+    console.log(selectionInput)
+
     // chrome.runtime.sendMessage({ key: 'setSelection', selection: JSON.stringify(selectionOutput) })
   }
 })

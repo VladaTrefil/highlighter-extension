@@ -39,6 +39,7 @@ const getParsedSelection = (nodes, anchor) => {
       parentNode = parentNode.parentNode
     }
 
-    return { content: text, path: hierarchy }
+    const path = hierarchy.reverse().join('>')
+    return { content: text, path }
   })
 }
