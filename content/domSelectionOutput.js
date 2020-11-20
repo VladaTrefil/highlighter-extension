@@ -139,8 +139,8 @@ const getDomSelectionOutput = () => {
     const { start, end } = getBoundaries([anchorNode, focusNode], rootNodes)
     const selectedRootNodes = getRootNodesInBounds(start.index, end.index, rootNodes)
 
-    if (rootNodes.length > 0) {
-      const isAnchorStart = rootNodes[0].contains(anchorNode)
+    if (selectedRootNodes.length > 0) {
+      const isAnchorStart = selectedRootNodes[0].contains(anchorNode)
       const offset = getOffset(selection, isAnchorStart)
 
       const textNodes = getTextNodes(selectedRootNodes)
