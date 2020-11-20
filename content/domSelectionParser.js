@@ -1,9 +1,28 @@
+const getNodeIndex = (node) => {
+  let count = 0
+
+  while (true) {
+    if (node.nodeType !== Node.TEXT_NODE) {
+      count++
+    }
+
+    node = node.previousSibling
+
+    if (node === null) {
+      break
+    }
+  }
+
+  return count
+}
+
 const getNodeSelector = (node) => {
   const nodeName = node.nodeName.toLowerCase()
   const nodeID = node.id !== '' ? '#' + node.id : ''
   const nodeClass = node.className !== '' ? '.' + node.className.replaceAll(' ', '.') : ''
+  const nodeIndex = `:nth-child(${getNodeIndex(node)})`
 
-  const selector = nodeName + nodeID + nodeClass
+  const selector = nodeName + nodeIndex + nodeID + nodeClass
 
   return selector
 }
