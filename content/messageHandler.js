@@ -5,7 +5,10 @@ chrome.runtime.onMessage.addListener((request, sender) => {
 
     const selectedNodes = getDomSelectionInput(nodeData, anchor)
 
-    const highlight = createHighlight(selectedNodes, anchor)
+    const styleManager = new StyleManager()
+    styleManager.init()
+
+    const highlight = createHighlight(selectedNodes, anchor, styleManager.getClass('MARK_NODE'))
 
     console.log(highlight)
 

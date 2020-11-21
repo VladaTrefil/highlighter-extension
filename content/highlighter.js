@@ -1,5 +1,3 @@
-const HIGHLIGHT_CLASS = 'highlighted-tag'
-
 const insertMark = (mark, node) => {
   const nodeText = node.textContent
   const markText = mark.textContent
@@ -27,13 +25,13 @@ const insertMark = (mark, node) => {
   }
 }
 
-const createHighlight = (nodes, anchor) => {
+const createHighlight = (nodes, anchor, markClass) => {
   const highlight = nodes.map(({ node, content }, index) => {
     const mark = document.createElement('mark')
     const textNode = document.createTextNode(content)
 
     mark.appendChild(textNode)
-    mark.classList.add(HIGHLIGHT_CLASS)
+    mark.classList.add(markClass)
 
     insertMark(mark, node)
 
