@@ -3,9 +3,11 @@ chrome.runtime.onMessage.addListener((request, sender) => {
     const { nodes, anchor } = getDomSelectionOutput()
     const nodeData = getParsedSelection(nodes, anchor)
 
-    const selectionInput = getDomSelectionInput(nodeData, anchor)
+    const selectedNodes = getDomSelectionInput(nodeData, anchor)
 
-    console.log(selectionInput)
+    const highlight = createHighlight(selectedNodes, anchor)
+
+    console.log(highlight)
 
     // chrome.runtime.sendMessage({ key: 'setSelection', selection: JSON.stringify(selectionOutput) })
   }
