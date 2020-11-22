@@ -17,10 +17,28 @@ const getNodeIndex = (node) => {
   return count
 }
 
+const getNodeClassSelector = (node) => {
+  if (node.classList.length > 0) {
+    const classes = Object.values(node.classList)
+      .map((className) => {
+        if (className.length > 0 && className.indexOf(':') === -1) {
+          return '.' + className // change to actual regex
+        } else {
+          return false
+        }
+      })
+      .filter((className) => className)
+
+    return classes.join('')
+  } else {
+    return ''
+  }
+}
+
 const getNodeSelector = (node) => {
   const nodeName = node.nodeName.toLowerCase()
   const nodeID = node.id !== '' ? '#' + node.id : ''
-  const nodeClass = node.className !== '' ? '.' + node.className.replaceAll(' ', '.') : ''
+  const nodeClass = getNodeClassSelector(node)
   const nodeIndex = `:nth-child(${getNodeIndex(node)})`
 
   const selector = nodeName + nodeIndex + nodeID + nodeClass
