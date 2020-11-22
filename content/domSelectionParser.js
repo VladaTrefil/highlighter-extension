@@ -1,8 +1,9 @@
 const getNodeIndex = (node) => {
+  const skipNodes = [Node.TEXT_NODE, Node.COMMENT_NODE]
   let count = 0
 
   while (true) {
-    if (node.nodeType !== Node.TEXT_NODE) {
+    if (skipNodes.indexOf(node.nodeType) === -1) {
       count++
     }
 
