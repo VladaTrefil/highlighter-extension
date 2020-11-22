@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener((request, sender) => {
     const styleManager = new StyleManager()
     styleManager.init()
 
-    const highlight = createHighlight(selectedNodes, anchor, styleManager.getClass('MARK_NODE'))
+    const highlight = createHighlight(selectedNodes, styleManager.getClass('MARK_NODE'))
 
     console.log(highlight)
 

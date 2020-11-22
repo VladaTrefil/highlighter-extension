@@ -113,7 +113,7 @@ const getAnchorID = (parent) => {
     parent = parent.parentNode
   }
 
-  if (parent.id !== '') {
+  if (parent.id && parent.id !== '') {
     return parent.id
   } else {
     return false
@@ -153,6 +153,7 @@ const getDomSelectionOutput = () => {
     }
   } else {
     const anchorParentID = getAnchorID(anchorNode)
+    console.log(anchorParentID)
     const node = { node: anchorNode, text: text }
 
     return { nodes: [node], text, anchor: anchorParentID }

@@ -33,11 +33,16 @@ const getParsedSelection = (nodes, anchor) => {
     const hierarchy = []
     let parentNode = node.parentNode
 
-    while (parentNode.id !== anchor) {
+    const documentBody = window.document.body
+    while (parentNode !== documentBody) {
       const nodeSelector = getNodeSelector(parentNode)
 
       hierarchy.push(nodeSelector)
       parentNode = parentNode.parentNode
+
+      if (parentNode.id === anchor) {
+        break
+      }
     }
 
     const path = hierarchy.reverse().join('>')

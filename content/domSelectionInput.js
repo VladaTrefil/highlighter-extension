@@ -1,9 +1,7 @@
-const getDomSelectionInput = (nodeData, anchorID) => {
-  const anchorParent = window.document.getElementById(anchorID)
-
+const getDomSelectionInput = (nodeData) => {
   const nodes = nodeData
     .map(({ content, path }) => {
-      const node = anchorParent.querySelector(path)
+      const node = document.body.querySelector(path)
       const textNodes = Object.values(node.childNodes)
 
       const targetTextNode = textNodes.filter((textNode) => {

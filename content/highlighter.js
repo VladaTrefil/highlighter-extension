@@ -8,7 +8,7 @@ const insertMark = (mark, node) => {
 
   console.log({ startText, endText, markText, markIndex, nodeText })
 
-  if (markIndex > 0 && markIndex + markText.length < nodeText.length - 1) {
+  if (markIndex > 0 && markIndex + markText.length < nodeText.length) {
     const endNode = document.createTextNode(endText)
     node.textContent = startText
     node.after(endNode)
@@ -16,7 +16,7 @@ const insertMark = (mark, node) => {
   } else if (markIndex > 0) {
     node.textContent = startText
     node.after(mark)
-  } else if (markIndex < nodeText.length - 1) {
+  } else if (markIndex < nodeText.length) {
     node.textContent = endText
     node.before(mark)
   } else {
@@ -25,7 +25,7 @@ const insertMark = (mark, node) => {
   }
 }
 
-const createHighlight = (nodes, anchor, markClass) => {
+const createHighlight = (nodes, markClass) => {
   const highlight = nodes.map(({ node, content }, index) => {
     const mark = document.createElement('mark')
     const textNode = document.createTextNode(content)
