@@ -88,18 +88,25 @@ const getMatchingNodes = (nodes, fullText, offset) => {
   return nodes
     .map((node, index) => {
       const nodeText = node.textContent
+      const nodeOffset = { start: 0, end: 0 }
       let partText = ''
 
       if (index === 0) {
         partText = nodeText.slice(offset.start)
+        nodeOffset.start = offset.start
       } else if (index === nodes.length - 1) {
         partText = nodeText.slice(0, offset.end)
+        nodeOffset.end = offset.end
       } else {
         partText = nodeText
       }
 
       if (fullText.includes(partText)) {
-        return { node, text: partText }
+        return {
+          node,
+          content: partText,
+          offset: nodeOffset,
+        }
       } else {
         return false
       }
@@ -133,29 +140,31 @@ const getDomSelectionOutput = () => {
   const anchorNode = selection.anchorNode
   const focusNode = selection.focusNode
 
+  let anchorParentID = ''
+  let nodes = []
+
   if (anchorNode !== focusNode) {
     const parentNode = getCommonParent(anchorNode, focusNode)
     const rootNodes = Object.values(parentNode.childNodes)
+
     const { start, end } = getBoundaries([anchorNode, focusNode], rootNodes)
     const selectedRootNodes = getRootNodesInBounds(start.index, end.index, rootNodes)
 
-    if (selectedRootNodes.length > 0) {
-      const isAnchorStart = selectedRootNodes[0].contains(anchorNode)
-      const offset = getOffset(selection, isAnchorStart)
+    const isAnchorStart = selectedRootNodes[0].contains(anchorNode)
+    const offset = getOffset(selection, isAnchorStart)
 
-      const textNodes = getTextNodes(selectedRootNodes)
-      const selectedNodes = removeNodesOutsideBounds(textNodes, start.node, end.node)
-      const matchingNodes = getMatchingNodes(selectedNodes, text, offset)
+    const textNodes = getTextNodes(selectedRootNodes)
+    const selectedNodes = removeNodesOutsideBounds(textNodes, start.node, end.node)
 
-      const anchorParentID = getAnchorID(parentNode)
-
-      return { nodes: matchingNodes, text, anchor: anchorParentID }
-    }
+    anchorParentID = getAnchorID(parentNode)
+    nodes = getMatchingNodes(selectedNodes, text, offset)
   } else {
-    const anchorParentID = getAnchorID(anchorNode)
-    console.log(anchorParentID)
-    const node = { node: anchorNode, text: text }
+    const isAnchorStart = anchorNode.textContent.indexOf(text) === selection.anchorOffset
+    const offset = getOffset(selection, isAnchorStart)
 
-    return { nodes: [node], text, anchor: anchorParentID }
+    anchorParentID = getAnchorID(anchorNode)
+    nodes.push({ node: anchorNode, content: text, offset })
   }
+
+  return { nodes, text, anchorID: anchorParentID }
 }

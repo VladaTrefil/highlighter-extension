@@ -1,22 +1,19 @@
-const insertMark = (mark, node) => {
+const insertMark = (mark, node, offset) => {
   const nodeText = node.textContent
   const markText = mark.textContent
 
-  const markIndex = nodeText.indexOf(markText)
-  const startText = nodeText.substr(0, markIndex)
-  const endText = nodeText.substr(markIndex + markText.length)
+  const startText = nodeText.substr(0, offset.start)
+  const endText = nodeText.substr(offset.end)
 
-  console.log({ startText, endText, markText, markIndex, nodeText })
-
-  if (markIndex > 0 && markIndex + markText.length < nodeText.length) {
+  if (offset.start !== 0 && offset.end !== 0) {
     const endNode = document.createTextNode(endText)
     node.textContent = startText
     node.after(endNode)
     node.after(mark)
-  } else if (markIndex > 0) {
+  } else if (offset.start !== 0) {
     node.textContent = startText
     node.after(mark)
-  } else if (markIndex < nodeText.length) {
+  } else if (offset.end !== 0) {
     node.textContent = endText
     node.before(mark)
   } else {
@@ -26,14 +23,14 @@ const insertMark = (mark, node) => {
 }
 
 const createHighlight = (nodes, markClass) => {
-  const highlight = nodes.map(({ node, content }, index) => {
+  const highlight = nodes.map(({ node, content, offset }, index) => {
     const mark = document.createElement('mark')
     const textNode = document.createTextNode(content)
 
     mark.appendChild(textNode)
     mark.classList.add(markClass)
 
-    insertMark(mark, node)
+    insertMark(mark, node, offset)
 
     return mark
   })

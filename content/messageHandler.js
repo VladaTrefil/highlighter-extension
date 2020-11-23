@@ -1,16 +1,17 @@
+const styleManager = new StyleManager(chrome)
+styleManager.init()
+
 chrome.runtime.onMessage.addListener((request, sender) => {
   if (request.key === 'getSelection') {
-    const { nodes, anchor } = getDomSelectionOutput()
-    const nodeData = getParsedSelection(nodes, anchor)
+    // Selecting
+    const { nodes, text, anchorID } = getDomSelectionOutput()
+    const nodeData = parseNodeQuery(nodes, anchorID)
 
-    const selectedNodes = getDomSelectionInput(nodeData, anchor)
+    console.log(nodeData)
 
-    const styleManager = new StyleManager()
-    styleManager.init()
-
+    // Highlighting
+    const selectedNodes = getDomSelectionInput(nodeData)
     const highlight = createHighlight(selectedNodes, styleManager.getClass('MARK_NODE'))
-
-    console.log(highlight)
 
     // chrome.runtime.sendMessage({ key: 'setSelection', selection: JSON.stringify(selectionOutput) })
   }

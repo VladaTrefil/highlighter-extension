@@ -1,4 +1,14 @@
-const getNodeIndex = (node) => {
+const parseNodeQuery = (nodes, anchor) => {
+  return nodes.map((nodeData) => {
+    const query = getNodeQuery(nodeData.node, anchor)
+    const content = nodeData.content
+    const offset = nodeData.offset
+
+    return { query, content, offset }
+  })
+}
+
+function getNodeIndex(node) {
   const skipNodes = [Node.TEXT_NODE, Node.COMMENT_NODE]
   let count = 0
 
@@ -17,7 +27,7 @@ const getNodeIndex = (node) => {
   return count
 }
 
-const getNodeClassSelector = (node) => {
+function getNodeClassSelector(node) {
   if (node.classList.length > 0) {
     const classes = Object.values(node.classList)
       .map((className) => {
@@ -35,7 +45,7 @@ const getNodeClassSelector = (node) => {
   }
 }
 
-const getNodeSelector = (node) => {
+function getNodeSelector(node) {
   const nodeName = node.nodeName.toLowerCase()
   const nodeID = node.id !== '' ? '#' + node.id : ''
   const nodeClass = getNodeClassSelector(node)
@@ -46,24 +56,21 @@ const getNodeSelector = (node) => {
   return selector
 }
 
-const getParsedSelection = (nodes, anchor) => {
-  return nodes.map(({ node, text }) => {
-    const hierarchy = []
-    let parentNode = node.parentNode
+function getNodeQuery(node, anchor) {
+  const hierarchy = []
+  let parentNode = node.parentNode
 
-    const documentBody = window.document.body
-    while (parentNode !== documentBody) {
-      const nodeSelector = getNodeSelector(parentNode)
+  const documentBody = window.document.body
+  while (parentNode !== documentBody) {
+    const nodeSelector = getNodeSelector(parentNode)
+    hierarchy.push(nodeSelector)
 
-      hierarchy.push(nodeSelector)
+    if (parentNode.id === anchor) {
+      break
+    } else {
       parentNode = parentNode.parentNode
-
-      if (parentNode.id === anchor) {
-        break
-      }
     }
+  }
 
-    const path = hierarchy.reverse().join('>')
-    return { content: text, path }
-  })
+  return hierarchy.reverse().join('>')
 }
