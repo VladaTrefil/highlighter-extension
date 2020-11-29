@@ -1,12 +1,33 @@
 const getSelectedDOM = (anchor, focus, parent) => {
-  let nodes = Object.values(parent.childNodes)
-  const { start, end } = getBoundaries([anchor, focus], nodes)
+  let nodes = []
+  let rootID = null
 
-  nodes = getNodesInBounds(nodes, start.rootNode, end.rootNode)
-  nodes = getTextNodes(nodes)
-  nodes = getNodesInBounds(nodes, start.node, end.node)
+  if (anchor !== focus) {
+    const parent = getCommonParent(anchor, focus)
+    nodes = Object.values(parent.childNodes)
+    const { start, end } = getBoundaries([anchor, focus], nodes)
 
-  return nodes
+    nodes = getNodesInBounds(nodes, start.rootNode, end.rootNode)
+    nodes = getTextNodes(nodes)
+    nodes = getNodesInBounds(nodes, start.node, end.node)
+
+    rootID = getRootID(parent)
+  } else {
+    nodes.push(anchor)
+    rootID = getRootID(anchor)
+  }
+
+  return { nodes, rootID }
+}
+
+function getCommonParent(anchorNode, focusNode) {
+  let parentNode = focusNode.nodeType === Node.TEXT_NODE ? focusNode.parentNode : focusNode
+
+  while (!parentNode.contains(anchorNode)) {
+    parentNode = parentNode.parentNode
+  }
+
+  return parentNode
 }
 
 function getBoundaries(bounds, nodes) {
@@ -52,4 +73,16 @@ function getTextNodes(nodes) {
   }
 
   return selectedNodes
+}
+
+function getRootID(parent) {
+  while (parent.parentNode && !parent.id) {
+    parent = parent.parentNode
+  }
+
+  if (parent.id && parent.id !== '') {
+    return parent.id
+  } else {
+    return false
+  }
 }
