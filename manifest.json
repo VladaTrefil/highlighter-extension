@@ -20,7 +20,8 @@
         "content/StyleManager.js",
         "content/selectionDOM.js",
         "content/selection.js",
-        "content/domSelectionInput.js",
+        "content/parseNodeData.js",
+        "content/queryNodeData.js",
         "content/highlighter.js",
         "content/messageHandler.js"
       ]

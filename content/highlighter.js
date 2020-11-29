@@ -1,6 +1,5 @@
 const insertMark = (mark, node, offset) => {
   const nodeText = node.textContent
-  const markText = mark.textContent
 
   const startText = nodeText.substr(0, offset.start)
   const endText = nodeText.substr(offset.end)

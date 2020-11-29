@@ -1,6 +1,6 @@
-const getDomSelectionInput = (nodeData) => {
+const queryNodeData = (nodeData, selOffset) => {
   const nodes = nodeData
-    .map(({ query, content, offset }) => {
+    .map(({ query, content }, index) => {
       const node = document.body.querySelector(query)
       const textNodes = Object.values(node.childNodes)
 
@@ -11,12 +11,13 @@ const getDomSelectionInput = (nodeData) => {
           return false
         }
       })
-      console.log(offset)
+
+      const offset = setNodeOffset(index, selOffset, nodeData.length)
 
       if (targetTextNode.length > 0) {
         return {
           node: targetTextNode[0],
-          content: content,
+          content,
           offset,
         }
       } else {
@@ -26,4 +27,20 @@ const getDomSelectionInput = (nodeData) => {
     .filter((node) => node)
 
   return nodes
+}
+
+function setNodeOffset(index, offset, length) {
+  let start = 0
+  let end = 0
+
+  if (length === 1) {
+    start = offset.start
+    end = offset.end
+  } else if (index === 0) {
+    start = offset.start
+  } else if (index === length - 1) {
+    end = offset.end
+  }
+
+  return { start, end }
 }
